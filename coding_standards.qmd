@@ -4,6 +4,7 @@ format:
   revealjs:
     self-contained: true
     css: styles.css
+    slide-number: true
 execute:
   echo: true
   eval: false
@@ -32,46 +33,53 @@ execute:
 
 This design saves disk space and ensures isolation between projects.
 
-## How to start using `renv` in an R project
+## Use case 1: How to start using `renv` in an R project
 
 1.  Run `install.packages("renv")`  
 2.  `renv::init()` scans project files (`.R`, `.Rmd`, `.qmd`, `.Rnw`) for required packages and their dependencies. Then it
     - Creates the project library `renv/library/`
     - Installs required packages into the cache (`renv::paths$cache()` gives the cache path)
-    - Writes the lockfile `renv.lock` that contains *R* and *R* package metadata recording the state of the project library (and used to reproduce package environment by others or future self)
+    - Writes the lockfile `renv.lock` that contains *R* and *R* package metadata recording the state of the project library (and used to reproduce project library by others or future self)
   
-## How to start using `renv` in an R project
-3. Commit the following to git:
-    - `renv.lock`
-    - `.Rprofile`
-    - `renv/activate.R`
-        - Ensures `renv` auto-activates when the project opens
-    - `renv/settings.json`
-        - Ensures `renv` behaves the same for all collaborators
+## Use case 1: How to start using `renv` in an R project
+3. Commit `renv.lock` to git as the only `renv`-generated file
+    - Note: if `.Rprofile` and `renv/activate.R` are also committed to git, `renv` will be automatically activated when the project is opened (on any machine)
 
-## Maintaining `renv`
-
+## Use case 1: Maintaining `renv` after it was activated in an R project
 - Use `renv::install("pkgname")` to install a new package or update an installed package
 - After installing or updating one or multiple packages, use `renv::snapshot()` to update `renv.lock`
 
-## Steps to create/update project library after `renv.lock` has been created/updated (e.g., by a collaborator)
+## Use case 2: Reproduce output in an R project that uses `renv` {.compact}
+1. Open the project
+2. Activate `renv`
+    - If `.Rprofile` and `renv/activate.R` exist in the project folder, `renv` activates automatically (and installs if needed)
+    - Otherwise, run `install.packages("renv")` and `renv::activate()`
+    - Either activation---automatic or manual---creates a project library based on `renv.lock`
+    - `renv::activate()` also adds `.Rprofile` and `renv/activate.R`
+3. Run the analysis
 
-- `renv` automatically bootstraps itself (i.e., downloads and installs) when a project is first opened in which `renv` has been activated by a collaborator
-    - `.Rprofile` is involved
-- Use `renv::restore()` to update/reproduce package environment as specified by `renv.lock`
+## Use case 3: Collaborative code development in an R project that uses `renv`
+
+Suppose `renv` is already activated (see previous slide).
+
+- If a collaborator installs/updates a package(s), runs `renv::snapshot()`, and pushes a commit with an updated `renv.lock`, then call `renv::restore()` to sync your project library with the new `renv.lock`
+- *Key idea:* `renv.lock` is the single source of truth
 
 ## Limitation of `renv`
 
 - `renv` records the **R version** but does not install *R* for you
 - Collaborators must install a compatible *R* version separately
 
-## Notes about `renv`
+## Key `renv` functions
+- `renv::init()`
+- `renv::activate()`
+- `renv::install()`
+- `renv::snapshot()`
+- `renv::restore()`
 
+## To learn more about `renv`
 - Read **Introduction to renv**:<br> <https://rstudio.github.io/renv/articles/renv.html>
-- Don't edit `renv.lock` manually
-- Don't commit `renv/library` to git
-    - `renv::init()` handles this automatically by including `library/` in `renv/.gitignore`
     
 ## Advanced notes
-- If project includes many files with no *R* code, consider adding them to `.renvignore` at the top level
-    - E.g., add `figs/**` to ignore the folder `figs` and all its content
+- If project includes *R* code that should be ignored by `renv`, add respective files/folders to `.renvignore` at the top level
+    - E.g., add `dev/**` to ignore the folder `dev` and all its content

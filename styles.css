@@ -6,3 +6,14 @@
 .reveal li {
   line-height: 1.1;
 }
+
+/* Reduce line spacing only on slides with class "compact" */
+.reveal section.compact p,
+.reveal section.compact li {
+  line-height: 1.0;
+}
+
+.reveal section.compact ul li,
+.reveal section.compact ol li {
+  margin-top: 0.1em;
+}
