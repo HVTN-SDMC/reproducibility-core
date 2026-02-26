@@ -1,6 +1,6 @@
 ---
 title: "R Coding Standards for Reproducibility"
-format:
+format: 
   revealjs:
     self-contained: true
     css: styles.css
