@@ -93,12 +93,16 @@ Note: when you start R in a folder or start a project in RStudio, if the folder/
 
 [ Note: 
 1) Using base::install.packages or remotes::install_github or other methods to install packages may have undesirable effects and are not recommended. 
-2) renv::install can also install specific versions of packages.]{style="font-size: 0.6em"}
+2) renv::install can also install specific versions of packages, e.g. renv::install("https://cran.r-project.org/src/contrib/Archive/kyotil/kyotil_2024.7-31.tar.gz")
+]{style="font-size: 0.6em"}
 
 
 ## Troubleshooting
 
-We recommend using the directory containing renv.lock as the working directory to avoid certain errors. If unexpected errors occur, check if the home directory contains .Rprofile, renv.lock, and renv/.
+- We recommend using the directory containing renv.lock as the working directory to avoid certain errors. 
+- If unexpected errors occur, check if the home directory contains .Rprofile, renv.lock, and renv/.
+- If you encounter warnings like: curl: (22), the requested URL returned error: 403 rate limit exceeded. The solution is to first authenticate with your personal github access token by running the following in R:
+
 
 
 
