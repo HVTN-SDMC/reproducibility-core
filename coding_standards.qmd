@@ -1,5 +1,8 @@
 ---
-title: "R Coding Standards for Reproducibility"
+title: "Using renv for Reproducibility"
+author: ["HVTN Reproducibility Core"]
+date: today
+date-format: long
 format: 
   revealjs:
     self-contained: true
