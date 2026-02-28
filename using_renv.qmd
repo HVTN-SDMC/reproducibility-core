@@ -99,7 +99,8 @@ This design saves disk space and ensures isolation between projects.
 
 - We recommend using the folder containing `renv.lock` as the working directory to avoid certain errors
 - If unexpected errors occur, check if the home directory contains `.Rprofile`, `renv.lock`, and `renv/`
-- If you encounter warnings such as `curl: (22), the requested URL returned error: 403 rate limit exceeded`, the solution is to first authenticate with your personal GitHub access token by running the following in *R*:
+- If you encounter warnings such as `curl: (22), the requested URL returned error: 403 rate limit exceeded`, the solution is to first authenticate with your personal GitHub access token by `Sys.setenv(GITHUB_PAT = "xxxxxxxxxxxxx")`
+
 
 
 
