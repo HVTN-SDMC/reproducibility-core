@@ -1,0 +1,41 @@
+---
+title: "Coding for Reproducibility"
+author: ["HVTN Reproducibility Core"]
+date: today
+date-format: long
+format: 
+  revealjs:
+    self-contained: true
+    css: styles.css
+    slide-number: true
+execute:
+  echo: true
+  eval: false
+  warning: false
+  message: false
+---
+
+
+## Handling rng for resampling {.compact .small}
+
+```
+# store the current rng state
+saved.seed <- try(get(".Random.seed", .GlobalEnv), silent=TRUE) 
+if (inherits(saved.seed,"try-error")) {set.seed(1); saved.seed <- get(".Random.seed", .GlobalEnv) }         
+
+# resample and run analysis
+seeds=1:B; names(seeds)=seeds
+out=mclapply(seeds, mc.cores = numCores, FUN=function(seed) {   
+  set.seed(seed+560)
+  ...
+})
+
+# restore rng state 
+assign(".Random.seed", saved.seed, .GlobalEnv)    
+```
+
+<br>
+
+::: {style="font-size: 0.65em;"}
+**Note**: `inherits(saved.seed,"try-error")` may occur if random number generator has not been called before.
+:::
