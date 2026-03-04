@@ -1,6 +1,6 @@
 ---
 title: "Writing Reproducibility Documents"
-author: ["HVTN Reproducibility Core"]
+author: ["HVTN SDMC Reproducible Science Core"]
 date: today
 date-format: long
 format: 

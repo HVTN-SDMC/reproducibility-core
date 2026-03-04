@@ -444,7 +444,7 @@
   <meta name="generator" content="quarto-1.5.57">
 
   <meta name="author" content="HVTN SDMC Reproducible Science Core">
-  <meta name="dcterms.date" content="2026-02-27">
+  <meta name="dcterms.date" content="2026-03-03">
   <title>Using renv for Reproducibility</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -1182,7 +1182,7 @@ HVTN SDMC Reproducible Science Core
 </div>
 </div>
 
-  <p class="date">February 27, 2026</p>
+  <p class="date">March 3, 2026</p>
 </section>
 <section id="what-is-renv" class="slide level2">
 <h2>What is <code>renv</code>?</h2>
@@ -1280,7 +1280,7 @@ HVTN SDMC Reproducible Science Core
 <ul>
 <li>We recommend using the folder containing <code>renv.lock</code> as the working directory to avoid certain errors</li>
 <li>If unexpected errors occur, check if the home directory contains <code>.Rprofile</code>, <code>renv.lock</code>, and <code>renv/</code></li>
-<li>If you encounter warnings such as <code>curl: (22), the requested URL returned error: 403 rate limit exceeded</code>, the solution is to first authenticate with your personal GitHub access token by running the following in <em>R</em>:</li>
+<li>If you encounter warnings such as <code>curl: (22), the requested URL returned error: 403 rate limit exceeded</code>, the solution is to first authenticate with your GitHub personal access token by <code>Sys.setenv(GITHUB_PAT = &quot;xxxxxxxxxxxxx&quot;)</code></li>
 </ul>
 </section>
 <section id="limitation-of-renv" class="slide level2">
@@ -1298,7 +1298,7 @@ HVTN SDMC Reproducible Science Core
 <h2><code>.renvignore</code></h2>
 <p>If project includes <em>R</em> code that should or can be ignored by <code>renv</code>, add respective files/folders to <code>.renvignore</code> at the top level</p>
 <ul>
-<li>E.g., add <code>dev/**</code> to ignore the folder <code>dev</code> and all its content</li>
+<li>E.g., add <code>dev/</code> to ignore the folder <code>dev</code> and all its content</li>
 </ul>
 </section>
 <section id="renv.lock-at-different-levels-of-code-hierarchy" class="slide level2 compact smaller">
@@ -1307,7 +1307,7 @@ HVTN SDMC Reproducible Science Core
 <li><p>The repo <code>CoVPN/correlates_reporting2</code> contains multiple modules (e.g., <code>cor_coxph</code>, <code>cor_threshold</code>) for multiple types of analyses. We recommend either using module-level project library (e.g., <code>cor_coxph/renv.lock</code>) or project-level library (e.g., <code>cor_threshold/sanofi_stage2/renv.lock</code>)</p></li>
 <li><p>To use module-level project library, some changes are needed so that rendering <code>Rmd</code> reports uses module-level library instead of root-level library. Take <code>cor_coxph</code> as an example</p>
 <ul>
-<li>Edit _build_chapeter.sh (see <code>cor_coxph</code> for example)</li>
+<li>Edit _build_chapter.sh (see <code>cor_coxph</code> for example)</li>
 <li>Copy <code>index_cor.Rmd</code> and <code>book.bib</code> from repo root to <code>cor_coxph/</code></li>
 <li>Move <code>_bookdown_cor_coxph.yml</code> from repo root to <code>cor_coxph/</code></li>
 <li>Update all files at module level to replace module name by ‘.’, e.g.

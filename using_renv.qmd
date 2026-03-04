@@ -99,7 +99,7 @@ This design saves disk space and ensures isolation between projects.
 
 - We recommend using the folder containing `renv.lock` as the working directory to avoid certain errors
 - If unexpected errors occur, check if the home directory contains `.Rprofile`, `renv.lock`, and `renv/`
-- If you encounter warnings such as `curl: (22), the requested URL returned error: 403 rate limit exceeded`, the solution is to first authenticate with your personal GitHub access token by `Sys.setenv(GITHUB_PAT = "xxxxxxxxxxxxx")`
+- If you encounter warnings such as `curl: (22), the requested URL returned error: 403 rate limit exceeded`, the solution is to first authenticate with your GitHub personal access token by `Sys.setenv(GITHUB_PAT = "xxxxxxxxxxxxx")`
 
 
 
@@ -119,7 +119,7 @@ In the following we will cover some more advanced topics related to `renv`.
 
 If project includes *R* code that should or can be ignored by `renv`, add respective files/folders to `.renvignore` at the top level
 
-- E.g., add `dev/**` to ignore the folder `dev` and all its content
+- E.g., add `dev/` to ignore the folder `dev` and all its content
 
 
 ## `renv.lock` at different levels of code hierarchy {.compact .smaller}
@@ -127,7 +127,7 @@ If project includes *R* code that should or can be ignored by `renv`, add respec
 - The repo `CoVPN/correlates_reporting2` contains multiple modules (e.g., `cor_coxph`, `cor_threshold`) for multiple types of analyses. We recommend either using module-level project library (e.g., `cor_coxph/renv.lock`) or project-level library (e.g., `cor_threshold/sanofi_stage2/renv.lock`)
 
 - To use module-level project library, some changes are needed so that rendering `Rmd` reports uses module-level library instead of root-level library. Take `cor_coxph` as an example
-  - Edit _build_chapeter.sh (see `cor_coxph` for example)
+  - Edit _build_chapter.sh (see `cor_coxph` for example)
   - Copy `index_cor.Rmd` and `book.bib` from repo root to `cor_coxph/`
   - Move `_bookdown_cor_coxph.yml` from repo root to `cor_coxph/`
   - Update all files at module level to replace module name by '.', e.g.
