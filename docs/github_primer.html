@@ -442,8 +442,8 @@
   <meta name="generator" content="quarto-1.8.26">
 
   <meta name="author" content="HVTN SDMC Reproducible Science Core">
-  <meta name="dcterms.date" content="2026-02-27">
-  <title>Using renv for Reproducibility</title>
+  <meta name="dcterms.date" content="2026-03-10">
+  <title>GitHub Primer for correlates_reporting2</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -988,7 +988,7 @@ margin-right: 0; }
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Using <code>renv</code> for Reproducibility</h1>
+  <h1 class="title">GitHub Primer for correlates_reporting2</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -998,140 +998,39 @@ HVTN SDMC Reproducible Science Core
 </div>
 </div>
 
-  <p class="date">February 27, 2026</p>
+  <p class="date">March 10, 2026</p>
 </section>
-<section id="what-is-renv" class="slide level2">
-<h2>What is <code>renv</code>?</h2>
+<section id="two-branches-of-correlates_reporting2" class="slide level2">
+<h2>Two Branches of correlates_reporting2</h2>
 <ul>
-<li><code>renv</code> is an <em>R</em> package that helps make <em>R</em> projects <strong>reproducible</strong></li>
-<li>It records:
+<li>master
 <ul>
-<li>Exact package versions used</li>
-<li>Where packages came from (CRAN, Bioconductor, GitHub)</li>
-<li>The <em>R</em> version used</li>
+<li>Code for NexGen</li>
+<li>Use R 4.4 mostly</li>
+<li>Contribute through fork and pull requests</li>
 </ul></li>
-<li>This allows collaborators, reviewers, and your future self to recreate the same <em>R</em> package environment on a different machine or at a later time</li>
-</ul>
-</section>
-<section id="how-renv-manages-packages" class="slide level2 compact">
-<h2>How <code>renv</code> manages packages</h2>
+<li>R40
 <ul>
-<li><strong>Global package cache</strong>:
-<ul>
-<li>Stores one copy of each package version on your machine under <code>renv::paths$cache()</code></li>
-<li>Shared across <em>R</em> projects for a given user</li>
-<li>Can be configured to be shared across users on servers</li>
-</ul></li>
-<li><strong>Project library</strong> (<code>renv/library/</code>):
-<ul>
-<li>Is project-specific and contains links to packages in the cache</li>
-<li>Should never be committed to git</li>
+<li>Code for first gen</li>
+<li>Use R 4.0 mostly</li>
+<li>Con</li>
 </ul></li>
 </ul>
-<p>This design saves disk space and ensures isolation between projects.</p>
 </section>
-<section id="using-renv" class="slide level2">
-<h2>Using <code>renv</code></h2>
+<section id="creating-a-fork-of-correlates_reporting2" class="slide level2">
+<h2>Creating a Fork of correlates_reporting2</h2>
 <ul>
-<li><p>In the following we assume the <code>renv</code> package is installed. If not, run <code>install.packages(&quot;renv&quot;)</code></p></li>
-<li><p>We first cover two scenarios to start using <code>renv</code></p></li>
-<li><p>We then explain how to use <code>renv</code> for routine package management. If the goal is to reproduce a study, this step is not required.</p></li>
+<li>From https://github.com/CoVPN/correlates_reporting2, click the ‘Fork’ button, which is on the same row as the repo name ‘correlates_reporting2’</li>
+<li>Make sure ‘Copy the master branch only’ is checked</li>
+<li>Click ‘Create fork’</li>
 </ul>
 </section>
-<section id="key-renv-functions" class="slide level2">
-<h2>4 key <code>renv</code> functions</h2>
-<p><code>renv</code> offers a wide set of function calls, but we will use only 4 functions to achieve all tasks:</p>
+<section id="creating-a-pull-request" class="slide level2">
+<h2>Creating a Pull Request</h2>
 <ul>
-<li><code>renv::init()</code></li>
-<li><code>renv::restore()</code></li>
-<li><code>renv::install()</code></li>
-<li><code>renv::snapshot()</code></li>
-</ul>
-</section>
-<section id="scenario-1-first-time-use-of-renv-in-a-project" class="slide level2 compact">
-<h2>Scenario 1: First-time use of <code>renv</code> in a project</h2>
-<ol type="1">
-<li>Run <code>renv::init()</code>. It
-<ul>
-<li>Scans project files (<code>.R</code>, <code>.Rmd</code>, <code>.qmd</code>, <code>.Rnw</code>) for required packages and their dependencies</li>
-<li>Creates the folder <code>renv/library/</code> and installs packages (or links) into the project library</li>
-<li>Creates <code>renv.lock</code>, which contains <em>R</em> and <em>R</em> package metadata recording the state of the project library (and used to reproduce project library by others or future self)</li>
-<li>Creates <code>.Rprofile</code> and <code>renv/activate.R</code></li>
-</ul></li>
-<li>Commit <code>renv.lock</code> to git</li>
-</ol>
-<p><em>Key idea:</em> <code>renv.lock</code> is the single source of truth</p>
-</section>
-<section id="scenario-2-start-of-work-in-a-project-that-contains-renv.lock" class="slide level2 compact">
-<h2>Scenario 2: Start of work in a project that contains <code>renv.lock</code></h2>
-<ul>
-<li>Run <code>renv::restore()</code>. It
-<ul>
-<li>Creates the folder <code>renv/library/</code> and installs packages (or links) recorded in <code>renv.lock</code> into the project library. This step may take a long time.</li>
-<li>Creates <code>.Rprofile</code> and <code>renv/activate.R</code> (overwrites if files already exist)</li>
-</ul></li>
-</ul>
-<p><em>Note:</em> when you start <em>R</em> in a folder or start a project in RStudio, if the folder/project already contains <code>.Rprofile</code> and <code>renv/activate.R</code>, it will automatically start installing packages (or links) recorded in <code>renv.lock</code> into the project library. This step may take a long time.</p>
-</section>
-<section id="using-renv-for-routine-package-management" class="slide level2 compact-smaller">
-<h2>Using <code>renv</code> for routine package management</h2>
-<ol type="1">
-<li><p>When a project folder contains <code>.Rprofile</code> and <code>renv/activate.R</code>, <em>R</em> configures the session to use <code>renv/library</code> on startup. This ensures that the right versions of packages are used</p></li>
-<li><p>To install or update new packages from either CRAN (<code>pkg1</code>) or GitHub (<code>user/pkg2</code>), run</p>
-<ul>
-<li><code>renv::install(&quot;pkg1&quot;); renv::install(&quot;user/pkg2&quot;)</code> or</li>
-<li><code>renv::install(c(&quot;pkg1&quot;, &quot;user/pkg2&quot;))</code></li>
-</ul></li>
-<li><p>To update <code>renv.lock</code> with package version info, run <code>renv::snapshot()</code></p></li>
-<li><p>If a collaborator updates <code>renv.lock</code>, call <code>renv::restore()</code> to sync your project library with the new <code>renv.lock</code></p></li>
-</ol>
-<p><em>Notes:</em></p>
-<ul>
-<li>Using <code>base::install.packages()</code>, <code>remotes::install_github()</code> or other methods to install packages may have undesirable effects and is not recommended</li>
-<li><code>renv::install()</code> can also install specific versions of packages, e.g., <code>renv::install(&quot;https://cran.r-project.org/src/contrib/Archive/kyotil/kyotil_2024.7-31.tar.gz&quot;)</code></li>
-</ul>
-</section>
-<section id="troubleshooting" class="slide level2">
-<h2>Troubleshooting</h2>
-<ul>
-<li>We recommend using the folder containing <code>renv.lock</code> as the working directory to avoid certain errors</li>
-<li>If unexpected errors occur, check if the home directory contains <code>.Rprofile</code>, <code>renv.lock</code>, and <code>renv/</code></li>
-<li>If you encounter warnings such as <code>curl: (22), the requested URL returned error: 403 rate limit exceeded</code>, the solution is to first authenticate with your personal GitHub access token by <code>Sys.setenv(GITHUB_PAT = &quot;xxxxxxxxxxxxx&quot;)</code></li>
-</ul>
-</section>
-<section id="limitation-of-renv" class="slide level2">
-<h2>Limitation of <code>renv</code></h2>
-<ul>
-<li><code>renv</code> records the <strong>R version</strong> but does not install <em>R</em> for you</li>
-<li>Collaborators must install a compatible <em>R</em> version separately</li>
-</ul>
-</section>
-<section id="advanced-topics" class="slide level2">
-<h2>Advanced topics</h2>
-<p>In the following we will cover some more advanced topics related to <code>renv</code>.</p>
-</section>
-<section id="renvignore" class="slide level2">
-<h2><code>.renvignore</code></h2>
-<p>If project includes <em>R</em> code that should or can be ignored by <code>renv</code>, add respective files/folders to <code>.renvignore</code> at the top level</p>
-<ul>
-<li>E.g., add <code>dev/**</code> to ignore the folder <code>dev</code> and all its content</li>
-</ul>
-</section>
-<section id="renv.lock-at-different-levels-of-code-hierarchy" class="slide level2 compact smaller">
-<h2><code>renv.lock</code> at different levels of code hierarchy</h2>
-<ul>
-<li><p>The repo <code>CoVPN/correlates_reporting2</code> contains multiple modules (e.g., <code>cor_coxph</code>, <code>cor_threshold</code>) for multiple types of analyses. We recommend either using module-level project library (e.g., <code>cor_coxph/renv.lock</code>) or project-level library (e.g., <code>cor_threshold/sanofi_stage2/renv.lock</code>)</p></li>
-<li><p>To use module-level project library, some changes are needed so that rendering <code>Rmd</code> reports uses module-level library instead of root-level library. Take <code>cor_coxph</code> as an example</p>
-<ul>
-<li>Edit _build_chapeter.sh (see <code>cor_coxph</code> for example)</li>
-<li>Copy <code>index_cor.Rmd</code> and <code>book.bib</code> from repo root to <code>cor_coxph/</code></li>
-<li>Move <code>_bookdown_cor_coxph.yml</code> from repo root to <code>cor_coxph/</code></li>
-<li>Update all files at module level to replace module name by ‘.’, e.g.
-<ul>
-<li><code>res = knitr::knit_child(c(here::here(&#39;cor_coxph&#39;, &#39;additional_model.Rmd&#39;)))</code> becomes</li>
-<li><code>res = knitr::knit_child(c(here::here(&#39;.&#39;, &#39;additional_model.Rmd&#39;)))</code></li>
-</ul></li>
-</ul></li>
+<li>Go to the forked repo, e.g. https://github.com/user_name/correlates_reporting2/ (not CoVPN/correlates_reporting2)</li>
+<li>click the pull request tab</li>
+<li>click new pull request to merge updates from user_name/correlates_reporting2 to CoVPN/correlates_reporting2</li>
 </ul>
 
 </section>
