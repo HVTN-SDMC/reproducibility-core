@@ -1,0 +1,44 @@
+---
+title: "GitHub Primer for correlates_reporting2"
+author: ["HVTN SDMC Reproducible Science Core"]
+date: today
+date-format: long
+format: 
+  revealjs:
+    self-contained: true
+    css: styles.css
+    slide-number: true
+execute:
+  echo: true
+  eval: false
+  warning: false
+  message: false
+---
+
+
+## Two Branches of correlates_reporting2
+
+- master
+  - Code for NexGen
+  - Use R 4.4 mostly
+  - Contribute through fork and pull requests
+  
+- R40
+  - Code for first gen
+  - Use R 4.0 mostly
+  - Con
+
+
+
+## Creating a Fork of correlates_reporting2
+
+- From https://github.com/CoVPN/correlates_reporting2, click the 'Fork' button, which is on the same row as the repo name 'correlates_reporting2'
+- Make sure 'Copy the master branch only' is checked
+- Click 'Create fork'
+
+
+## Creating a Pull Request
+
+- Go to the forked repo, e.g. https://github.com/user_name/correlates_reporting2/ (not CoVPN/correlates_reporting2)
+- click the pull request tab
+- click new pull request to merge updates from user_name/correlates_reporting2 to CoVPN/correlates_reporting2
