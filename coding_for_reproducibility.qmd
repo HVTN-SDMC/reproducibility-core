@@ -16,6 +16,20 @@ execute:
 ---
 
 
+## Table of content
+
+- Statistical report
+- Random number generator
+- GitHub primer
+
+
+## Statistical report {.compact .small}
+
+- All reports should have an chapter that lists the code commit and the absolute path to the data file
+  - Commit all code changes to your fork before running the final report
+    - While reproducing reports from official CoVPN releases is ideal, committing code to a developer's fork before final generation serves as a critical fallback to ensure reproducibility
+
+
 ## Handling rng for resampling {.compact .small}
 
 ```
@@ -39,3 +53,34 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
 ::: {style="font-size: 0.65em;"}
 **Note**: `inherits(saved.seed,"try-error")` may occur if random number generator has not been called before.
 :::
+
+
+# GitHub Primer
+
+
+## Two Branches of correlates_reporting2
+
+- master
+  - Code for NexGen
+  - Use R 4.4 mostly
+  - Contribute through fork and pull requests
+  
+- R40
+  - Code for first gen
+  - Use R 4.0 mostly
+  - Con
+
+
+
+## Creating a Fork of correlates_reporting2
+
+- From https://github.com/CoVPN/correlates_reporting2, click the 'Fork' button, which is on the same row as the repo name 'correlates_reporting2'
+- Make sure 'Copy the master branch only' is checked
+- Click 'Create fork'
+
+
+## Creating a Pull Request
+
+- Go to the forked repo, e.g. https://github.com/user_name/correlates_reporting2/ (not CoVPN/correlates_reporting2)
+- click the pull request tab
+- click new pull request to merge updates from user_name/correlates_reporting2 to CoVPN/correlates_reporting2
