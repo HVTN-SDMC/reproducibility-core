@@ -18,17 +18,37 @@ execute:
 
 ## Table of content
 
-- Statistical report
-- Random number generator
-- GitHub primer
+- Coding for Portability
+- Coding for Numerical Stability 
+- GitHub Primer
+- On Reports
+- Writing Reproducibility Documents
 
 
-## Statistical report {.compact .small}
 
-- All reports should have an chapter that lists the code commit and the absolute path to the data file
-  - Commit all code changes to your fork before running the final report
-    - While reproducing reports from official CoVPN releases is ideal, committing code to a developer's fork before final generation serves as a critical fallback to ensure reproducibility
+# Coding for Portability
 
+- Avoid setwd() or using absolute paths because they will break if someone else downloads the code and tries to run it
+
+-	If the code sources a utility functions file, make sure that file is part of the code base, either at the project level or at the module level.
+
+- If the code writes results to subdirectories, make sure the subdirectories exist through, e.g.
+  ```r
+  dir.create("output", showWarnings = FALSE, recursive=TRUE)
+  ```
+  - Nothing occurs if the folder already exists
+  - The recursive option is needed if the path is more than one level deep
+
+
+
+  
+  
+# Coding for Numerical Stability 
+
+## R version
+
+- R version matters for a number of reasons. The main reason is that it is easier to find the right versions of packages if we use the right version of version
+- Ideally, we would use one of two R versions: 4.4.2 or 4.0.4, because these are two available and validated on SCHARP servers, which allow us to more easily reproduce results
 
 ## Handling rng for resampling {.compact .small}
 
@@ -54,9 +74,12 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
 **Note**: `inherits(saved.seed,"try-error")` may occur if random number generator has not been called before.
 :::
 
+## renv
+
+[Getting started with renv](https://hvtn-sdmc.github.io/reproducibility-core/using_renv.html)
+
 
 # GitHub Primer
-
 
 ## Two Branches of correlates_reporting2
 
@@ -71,7 +94,6 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
   - Con
 
 
-
 ## Creating a Fork of correlates_reporting2
 
 - From https://github.com/CoVPN/correlates_reporting2, click the 'Fork' button, which is on the same row as the repo name 'correlates_reporting2'
@@ -84,3 +106,111 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
 - Go to the forked repo, e.g. https://github.com/user_name/correlates_reporting2/ (not CoVPN/correlates_reporting2)
 - click the pull request tab
 - click new pull request to merge updates from user_name/correlates_reporting2 to CoVPN/correlates_reporting2
+
+
+
+
+
+
+
+# On Reports
+
+
+## Running Reports
+
+- If there are only a few Rmd files to be rendered, an Rscript call is sufficient
+  - E.g., [from cor_threshold](https://github.com/CoVPN/correlates_reporting2/blob/master/cor_threshold/sanofi_stage2/README.md)
+
+- Use a Makefile or a bash script to run analyses and generate reports
+  - E.g., [from cor_coxph](https://github.com/CoVPN/correlates_reporting2/blob/master/cor_coxph/Makefile)
+
+- If high performance cluster/slurm is used and there are dependencies between steps, multiple scripts may be needed
+  - E.g., [from cop_exposureproximal](https://github.com/CoVPN/correlates_reporting2/blob/master/cop_exposureproximal/ensemble_severe_correlates/README.md)
+
+
+## Recording commit in report appendix {.compact .small}
+
+- All reports should include an **appendix** that lists the code commit and the absolute path to the data file
+  - Replace ANALYSIS_READY_DATA_FILE_NAME in the example below with your file name
+  - Commit all code changes to your fork before running the final report
+  - While reproducing reports from official CoVPN releases is ideal, committing code to a developer's fork before final generation serves as a critical fallback to ensure reproducibility
+
+## Recording commit in report appendix {.compact .small}
+
+```` ```{r, echo = FALSE, message = FALSE, warning = FALSE, results='asis'} ````
+````
+commit_hash <- system("git rev-parse HEAD", intern = TRUE)
+git_url <- sub("\\.git$", paste0("/commits/", commit_hash), system("git remote get-url origin", intern = TRUE))
+cat("This report was built with code from [", sprintf("**[this commit](%s)**", git_url), "] and data from [", sprintf("**[this file](%s)**", ANALYSIS_READY_DATA_FILE_NAME), "].", sep="")
+````
+```` ``` ````
+
+
+## Report Naming {.compact}
+
+- Include a date string in the report file name to show the date on which report was produced (e.g., filename ending 20251023 for October 23, 2025).  This can be done via, e.g. 
+``
+  Rscript -e "rmarkdown::render('cor_threshold_barda_mock.Rmd', output_file='cor_threshold_barda_mock_$(date +%Y%m%d).pdf')"
+``  
+
+
+
+
+# Writing Reproducibility Documents
+
+
+## DataandCode.md file example {.smaller .compact}
+
+```
+## Table 1
+
+bAb-IgG Spike and nAb-ID50 antibody marker seroresponse frequencies (when applicable) by COVID-19 outcome status, geometric means (GMs) by COVID-19 outcome status, and their comparisons between non-cases and cases. Analysis based on eligible COVID-19 cases1 and non-cases2 from the non-naïve Per-Protocol Case-Cohort set. A) Placebo group; B) Vaccine group.
+
+**Statistical reports**:
+
+T:\covpn\p3005\\analysis\\correlates\\Part_A_Blinded_Phase_Data\reports\covpn\_correlates_cor_tabular_vat08_combined_20250520.pdf
+
+To **reproduce** this report, follow instructions at <https://github.com/CoVPN/correlates_reporting2/tree/master/cor_tabular/README.md#sanofi_stage2_correlates> (level 1 reproducibility test passed)
+
+Collage mapping
+
+* Data were extracted from pp. 75 (Table 2.57), 78 (Table 2.60), 96 (Table 2.78), and 107+108 (Table 2.84) of the report
+```
+
+<br>
+
+A full example: [Sanofi Stage 2 CoP Data and Code](https://github.com/CoVPN/correlates_reporting2/blob/master/reproducibility_docs/SanofiStage2CoPDataandCode.md)
+
+
+
+## Levels of reproducibility testing
+
+- Level 1: A report has been generated by someone other than the module’s author in an existing clone of the repo
+
+- Level 2: A report has been generated following README.md in a new directory on a SCHARP server
+
+
+## Template for **Reproducibility** section of README.md {.smaller}
+
+Every README.md should have a **Reproducibility** section that following a 4-part structure:
+
+```bash
+# a) obtaining the code
+wget https://github.com/CoVPN/correlates_reporting2/archive/refs/tags/sanofi_stage2_R4.0.zip
+unzip sanofi_stage2_R4.0.zip; rm sanofi_stage2_R4.0.zip
+cd correlates_reporting2-sanofi_stage2_R4.0
+
+# b) restore R package dependencies
+R
+    Sys.setenv(GITHUB_PAT = "xxxxxxxxxxxxxxxxxxxxxxxxxx") # use your personal github access token
+    # install.packages("renv") # if renv has not been installed; optional if renv bootstrap process is triggered
+    renv::restore()
+
+# c) edit config.yml so that the data_cleaned field uder vat08_combined points to a local copy of vat08_combined_data_processed_20250417.csv
+
+# d) generate report pdf
+export TRIAL=vat08_combined
+export stage=2    
+cd cor_coxph
+make 
+```
