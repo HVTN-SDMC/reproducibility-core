@@ -64,7 +64,9 @@ This design saves disk space and ensures isolation between projects.
     - Creates `.Rprofile` and `renv/activate.R`
 2. Commit `renv.lock` to git
   
-*Key idea:* `renv.lock` is the single source of truth
+*Key idea:* `renv.lock` is the single information source
+
+*Note:* The scan may not catch all dependencies.
 
 
 ## Scenario 2: Start of work in a project that contains `renv.lock` {.compact}
@@ -74,6 +76,9 @@ This design saves disk space and ensures isolation between projects.
   - Creates `.Rprofile` and `renv/activate.R` (overwrites if files already exist)
 
 *Note:* when you start *R* in a folder or start a project in RStudio, if the folder/project already contains `.Rprofile` and `renv/activate.R`, it will automatically start installing packages (or links) recorded in `renv.lock` into the project library. This step may take a long time.
+
+**Note**: Sometimes renv::restore() does not install all the needed packages. It is a good practice to check ./renv/library folder to inspect after running the command.
+
 
 ## Using `renv` for routine package management  {.compact-smaller}
 
@@ -125,6 +130,9 @@ If project includes *R* code that should or can be ignored by `renv`, add respec
 ## `renv.lock` at different levels of code hierarchy {.compact .smaller}
 
 - The repo `CoVPN/correlates_reporting2` contains multiple modules (e.g., `cor_coxph`, `cor_threshold`) for multiple types of analyses. We recommend either using module-level project library (e.g., `cor_coxph/renv.lock`) or project-level library (e.g., `cor_threshold/sanofi_stage2/renv.lock`)
+
+- Advantages of using module-level renv.lock
+  - renv::init() may not catch all dependencies. It is tedious to get a complete renv.lock by trial-and-error. Thus, it is better to avoid making renv.lock for each project
 
 - To use module-level project library, some changes are needed so that rendering `Rmd` reports uses module-level library instead of root-level library. Take `cor_coxph` as an example
   - Edit _build_chapter.sh (see `cor_coxph` for example)

@@ -20,8 +20,8 @@ execute:
 
 - Coding for Portability
 - Coding for Numerical Stability 
-- GitHub Primer
 - On Reports
+- GitHub Primer
 - Writing Reproducibility Documents
 
 
@@ -79,6 +79,74 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
 [Getting started with renv](https://hvtn-sdmc.github.io/reproducibility-core/using_renv.html)
 
 
+# On Reports
+
+
+## Writing Instructions for Generating Reports {.compact .small}
+
+```bash
+# a) obtaining the code
+wget https://github.com/CoVPN/correlates_reporting2/archive/refs/tags/sanofi_stage2_R4.0.zip
+unzip sanofi_stage2_R4.0.zip; rm sanofi_stage2_R4.0.zip
+cd correlates_reporting2-sanofi_stage2_R4.0
+
+# b) restore R package dependencies
+R
+    Sys.setenv(GITHUB_PAT = "xxxxxxxxxxxxxxxxxxxxxxxxxx") # use your personal github access token
+    # install.packages("renv") # if renv has not been installed; optional if renv bootstrap process is triggered
+    renv::restore()
+
+# c) edit config.yml so that the data_cleaned field uder vat08_combined points to a local copy of vat08_combined_data_processed_20250417.csv
+
+# d) generate report pdf
+export TRIAL=vat08_combined
+export stage=2    
+cd cor_coxph
+make 
+```
+
+## Writing Instructions for Generating Reports {.compact .small}
+
+For step d),
+
+- If there are only a few Rmd files to be rendered, an Rscript call is sufficient, e.g, 
+''
+Rscript -e "rmarkdown::render('controlled_risk_vaxart_mock.Rmd', output_file='controlled_risk_vaxart_mock_$(date +%Y%m%d).pdf')"
+''
+  
+- Use a Makefile or a bash script to run analyses and generate reports, [exampl from cor_coxph](https://github.com/CoVPN/correlates_reporting2/blob/master/cor_coxph/Makefile)
+
+- If high performance cluster/slurm is used and there are dependencies between steps, multiple scripts may be needed, [example from cop_exposureproximal](https://github.com/CoVPN/correlates_reporting2/blob/master/cop_exposureproximal/ensemble_severe_correlates/README.md)
+
+
+## Recording commit in report appendix {.compact .small}
+
+- All reports should include an **appendix** that lists the code commit and the absolute path to the data file
+  - Replace ANALYSIS_READY_DATA_FILE_NAME in the example below with your file name
+  - Commit all code changes to your fork before running the final report
+  - While reproducing reports from official CoVPN releases is ideal, committing code to a developer's fork before final generation serves as a critical fallback to ensure reproducibility
+
+## Recording commit in report appendix {.compact .small}
+
+```` ```{r, echo = FALSE, message = FALSE, warning = FALSE, results='asis'} ````
+````
+commit_hash <- system("git rev-parse HEAD", intern = TRUE)
+git_url <- sub("\\.git$", paste0("/commits/", commit_hash), system("git remote get-url origin", intern = TRUE))
+cat("This report was built with code from [", sprintf("**[this commit](%s)**", git_url), "] and data from [", sprintf("**[this file](%s)**", ANALYSIS_READY_DATA_FILE_NAME), "].", sep="")
+````
+```` ``` ````
+
+
+## Report Naming {.compact}
+
+- Include a date string in the report file name to show the date on which report was produced (e.g., filename ending 20251023 for October 23, 2025).  This can be done via, e.g. 
+``
+  Rscript -e "rmarkdown::render('cor_threshold_barda_mock.Rmd', output_file='cor_threshold_barda_mock_$(date +%Y%m%d).pdf')"
+``  
+
+
+
+
 # GitHub Primer
 
 ## Two Branches of correlates_reporting2
@@ -113,73 +181,37 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
 
 
 
-# On Reports
-
-
-## Running Reports
-
-- If there are only a few Rmd files to be rendered, an Rscript call is sufficient
-  - E.g., [from cor_threshold](https://github.com/CoVPN/correlates_reporting2/blob/master/cor_threshold/sanofi_stage2/README.md)
-
-- Use a Makefile or a bash script to run analyses and generate reports
-  - E.g., [from cor_coxph](https://github.com/CoVPN/correlates_reporting2/blob/master/cor_coxph/Makefile)
-
-- If high performance cluster/slurm is used and there are dependencies between steps, multiple scripts may be needed
-  - E.g., [from cop_exposureproximal](https://github.com/CoVPN/correlates_reporting2/blob/master/cop_exposureproximal/ensemble_severe_correlates/README.md)
-
-
-## Recording commit in report appendix {.compact .small}
-
-- All reports should include an **appendix** that lists the code commit and the absolute path to the data file
-  - Replace ANALYSIS_READY_DATA_FILE_NAME in the example below with your file name
-  - Commit all code changes to your fork before running the final report
-  - While reproducing reports from official CoVPN releases is ideal, committing code to a developer's fork before final generation serves as a critical fallback to ensure reproducibility
-
-## Recording commit in report appendix {.compact .small}
-
-```` ```{r, echo = FALSE, message = FALSE, warning = FALSE, results='asis'} ````
-````
-commit_hash <- system("git rev-parse HEAD", intern = TRUE)
-git_url <- sub("\\.git$", paste0("/commits/", commit_hash), system("git remote get-url origin", intern = TRUE))
-cat("This report was built with code from [", sprintf("**[this commit](%s)**", git_url), "] and data from [", sprintf("**[this file](%s)**", ANALYSIS_READY_DATA_FILE_NAME), "].", sep="")
-````
-```` ``` ````
-
-
-## Report Naming {.compact}
-
-- Include a date string in the report file name to show the date on which report was produced (e.g., filename ending 20251023 for October 23, 2025).  This can be done via, e.g. 
-``
-  Rscript -e "rmarkdown::render('cor_threshold_barda_mock.Rmd', output_file='cor_threshold_barda_mock_$(date +%Y%m%d).pdf')"
-``  
-
-
-
-
 # Writing Reproducibility Documents
 
 
 ## DataandCode.md file example {.smaller .compact}
 
+``
+# Summary of sharing of data and code for Zhang et al. “Distinct T-cell correlates of COVID-19 risk before and after a second booster in previously SARS-CoV-2 infected vs. naïve COVAIL trial participants ”
+
+**Zhang et al.**
+
+**March 12, 2026**
+
+- All analyses are based on the analysis-ready data file covail_data_processed_20250818.csv unless otherwise specified.
+- A copy of statistical reports are on the SCHARP network drive T:\covpn\COVAILcorrelates\analysis\correlates\reports\McElrathTcellsarticle
+``
+
+## DataandCode.md file example {.smaller .compact}
+
 ```
 ## Table 1
+bAb-IgG Spike and nAb-ID50 antibody marker seroresponse frequencies.
 
-bAb-IgG Spike and nAb-ID50 antibody marker seroresponse frequencies (when applicable) by COVID-19 outcome status, geometric means (GMs) by COVID-19 outcome status, and their comparisons between non-cases and cases. Analysis based on eligible COVID-19 cases1 and non-cases2 from the non-naïve Per-Protocol Case-Cohort set. A) Placebo group; B) Vaccine group.
-
-**Statistical reports**:
-
-T:\covpn\p3005\\analysis\\correlates\\Part_A_Blinded_Phase_Data\reports\covpn\_correlates_cor_tabular_vat08_combined_20250520.pdf
-
-To reproduce this report, follow instructions at <https://github.com/CoVPN/correlates_reporting2/tree/master/cor_tabular/README.md#sanofi_stage2_correlates> (level 1 reproducibility test passed)
+**Statistical reports**: T:\covpn\p3005\reports\correlates_cor_tabular_vat08_combined_20250520.pdf
 
 Collage mapping
 
 * Data were extracted from pp. 75 (Table 2.57), 78 (Table 2.60), 96 (Table 2.78), and 107+108 (Table 2.84) of the report
+
+To reproduce this report, follow instructions at [README](https://github.com/CoVPN/correlates_reporting2/tree/master/cor_tabular/README.md#sanofi_stage2_correlates) 
+
 ```
-
-<br>
-
-A full example: [Sanofi Stage 2 CoP Data and Code](https://github.com/CoVPN/correlates_reporting2/blob/R40/manuscripts/SanofiStage2CoP_DataandCode.md)
 
 
 
@@ -194,23 +226,4 @@ A full example: [Sanofi Stage 2 CoP Data and Code](https://github.com/CoVPN/corr
 
 Every README.md should have a **Reproducibility** section that following a 4-part structure:
 
-```bash
-# a) obtaining the code
-wget https://github.com/CoVPN/correlates_reporting2/archive/refs/tags/sanofi_stage2_R4.0.zip
-unzip sanofi_stage2_R4.0.zip; rm sanofi_stage2_R4.0.zip
-cd correlates_reporting2-sanofi_stage2_R4.0
 
-# b) restore R package dependencies
-R
-    Sys.setenv(GITHUB_PAT = "xxxxxxxxxxxxxxxxxxxxxxxxxx") # use your personal github access token
-    # install.packages("renv") # if renv has not been installed; optional if renv bootstrap process is triggered
-    renv::restore()
-
-# c) edit config.yml so that the data_cleaned field uder vat08_combined points to a local copy of vat08_combined_data_processed_20250417.csv
-
-# d) generate report pdf
-export TRIAL=vat08_combined
-export stage=2    
-cd cor_coxph
-make 
-```
