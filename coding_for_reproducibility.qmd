@@ -16,7 +16,7 @@ execute:
 ---
 
 
-## Table of content
+## Table of Contents
 
 - Coding for Portability
 - Coding for Numerical Stability 
@@ -47,7 +47,7 @@ execute:
 
 ## R version
 
-- R version matters for a number of reasons. The main reason is that it is easier to find the right versions of packages if we use the right version of version
+- R version matters for a number of reasons. The main reason is that it is easier to find the right versions of packages if we use the right version of R
 - Ideally, we would use one of two R versions: 4.4.2 or 4.0.4, because these are two available and validated on SCHARP servers, which allow us to more easily reproduce results
 
 ## Handling rng for resampling {.compact .small}
@@ -73,6 +73,35 @@ assign(".Random.seed", saved.seed, .GlobalEnv)
 ::: {style="font-size: 0.65em;"}
 **Note**: `inherits(saved.seed,"try-error")` may occur if random number generator has not been called before.
 :::
+
+
+## Handling rng for resampling {.compact .small .no-scroll}
+
+```
+library(parallel)
+library(doParallel)
+library(foreach)
+library(doRNG)
+
+fun <- function(seed, n_iter, ...){
+  # randomness before foreach()
+  ...
+  
+  out <- foreach(i = 1:n_iter, .options.RNG = seed) %dorng% {
+    # no set.seed() here; randomness for iteration i
+    ...
+  }
+  
+  # randomness after foreach()
+  ...
+}
+
+registerDoParallel(cores = n_cores)
+set.seed(1)  # master seed for the whole analysis
+...
+out <- fun(seed = 1001, n_iter = 1000, ...)
+...
+```
 
 ## renv
 
@@ -224,6 +253,6 @@ To reproduce this report, follow instructions at [README](https://github.com/CoV
 
 ## Template for **Reproducibility** section of README.md {.smaller}
 
-Every README.md should have a **Reproducibility** section that following a 4-part structure:
+Every README.md should have a **Reproducibility** section that follows a 4-part structure:
 
 
