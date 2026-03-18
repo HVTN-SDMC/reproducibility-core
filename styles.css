@@ -37,3 +37,7 @@
   max-height: none !important;
   overflow-y: visible !important;
 }
+
+.reveal h2 {
+  font-size: 3.3rem;  /* adjust to taste */
+}

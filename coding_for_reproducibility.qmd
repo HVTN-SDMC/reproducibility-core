@@ -110,7 +110,6 @@ out <- fun(seed = 1001, n_iter = 1000, ...)
 
 # On Reports
 
-
 ## Report Reproduction Instructions Template {.compact .smaller #4part_template}
 
 ```bash
@@ -165,7 +164,7 @@ Rscript -e "rmarkdown::render('controlled_risk_vaxart_mock.Rmd', output_file='co
 
 ## Recording code commit and data file in a report {.compact .small}
 
-- All reports should include an **appendix** section that lists the code commit and the absolute path to the data file
+- All reports should include an appendix section that lists the code commit and the absolute path to the data file
 - Copy the following Rmd chunk to your report Rmd (Replace ANALYSIS_READY_DATA_FILE_NAME with actual file name)
 
 ```` ```{r, echo = FALSE, message = FALSE, warning = FALSE, results='asis'} ````
@@ -185,7 +184,7 @@ cat("This report was built with code from [", sprintf("**[this commit](%s)**", g
   - Run the command if necessary to ensure renv.lock is synced: *renv::snapshot()*
   - Run report again, e.g., by *make report*
   
-- In this process, the commit is often to a fork. Although no ideal, this serves as a critical fallback to ensure reproducibility
+- In this process, the commit is often to a fork. Although not ideal, this serves as a critical fallback to ensure reproducibility
 
 
 
