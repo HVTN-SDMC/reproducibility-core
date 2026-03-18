@@ -111,7 +111,7 @@ out <- fun(seed = 1001, n_iter = 1000, ...)
 # On Reports
 
 
-## Writing Instructions for Reproducing Reports {.compact .smaller #4part_template}
+## Report Reproduction Instructions Template {.compact .smaller #4part_template}
 
 ```bash
 # a) obtaining the code
@@ -137,12 +137,12 @@ make
 
 <br>
 
-**Note**: see next slide for more examples on d)
+**Note**: see next slide for more examples on (d)
 
 
-## Writing Instructions for Reproducing Reports {.compact .small}
+## Report Reproduction Instructions Template {.compact .small}
 
-For step d),
+For step (d),
 
 - If there are only a few Rmd files to be rendered, an Rscript call is sufficient, e.g, 
 ''
@@ -163,15 +163,10 @@ Rscript -e "rmarkdown::render('controlled_risk_vaxart_mock.Rmd', output_file='co
 
 
 
+## Recording code commit and data file in a report {.compact .small}
 
-## Recording commit in report appendix {.compact .small}
-
-- All reports should include an **appendix** that lists the code commit and the absolute path to the data file
-  - Replace ANALYSIS_READY_DATA_FILE_NAME in the example below with your file name
-  - Commit all code changes to your fork before running the final report
-  - While reproducing reports from official CoVPN releases is ideal, committing code to a developer's fork before final generation serves as a critical fallback to ensure reproducibility
-
-## Recording commit in report appendix {.compact .small}
+- All reports should include an **appendix** section that lists the code commit and the absolute path to the data file
+- Copy the following Rmd chunk to your report Rmd (Replace ANALYSIS_READY_DATA_FILE_NAME with actual file name)
 
 ```` ```{r, echo = FALSE, message = FALSE, warning = FALSE, results='asis'} ````
 ````
@@ -182,10 +177,24 @@ cat("This report was built with code from [", sprintf("**[this commit](%s)**", g
 ```` ``` ````
 
 
+## Recording code commit and data file in a report {.compact .small}
 
-## Misc
+- To have the code in the commit correspond to the code used to generate reports, follow the following steps:
+  - Complete testing. This might involve generating reports to check results
+  - Commit all code changes, including changes in package dependencies
+  - Run the command if necessary to ensure renv.lock is synced: *renv::snapshot()*
+  - Run report again, e.g., by *make report*
+  
+- In this process, the commit is often to a fork. Although no ideal, this serves as a critical fallback to ensure reproducibility
 
-- A standalone plot may be better done with a standalone script that hardcodes the logic. 
+
+
+
+
+## Tips
+
+- A standalone plot may be better done with a standalone script that hard-codes the logic. 
+
 
 
 # GitHub Primer
