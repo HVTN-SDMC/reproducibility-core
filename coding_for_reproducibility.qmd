@@ -105,7 +105,7 @@ out <- fun(seed = 1001, n_iter = 1000, ...)
 
 ## renv
 
-[Getting started with renv](https://hvtn-sdmc.github.io/reproducibility-core/using_renv.html)
+[Getting started with renv](https://hvtn-sdmc.github.io/reproducibility-core/using_renv.html){target="_blank" rel="noopener noreferrer"}
 
 
 # On Reports
@@ -124,7 +124,7 @@ R
     # install.packages("renv") # if renv has not been installed; optional if renv bootstrap process is triggered
     renv::restore()
 
-# c) edit config.yml so that the data_cleaned field uder vat08_combined points to a local copy of vat08_combined_data_processed_20250417.csv
+# c) edit config.yml so that the data_cleaned field under vat08_combined points to a local copy of vat08_combined_data_processed_20250417.csv
 # c) edit all read.csv lines to read data from a local copy of vat08_combined_data_processed_20250417.csv
 
 # d) generate report pdf
